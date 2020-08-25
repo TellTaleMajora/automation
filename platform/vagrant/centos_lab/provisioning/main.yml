@@ -49,7 +49,7 @@
 
     - name: Setting up svc_secauto keys 
       copy: 
-        src: /Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/svc_secauto/ssh_keys/
+        src: ../files/svc_secauto/ssh_keys/
         dest: /home/svc_secauto/.ssh
         owner: svc_secauto
         group: svc_secauto
@@ -59,17 +59,17 @@
       authorized_key: 
         user: svc_secauto
         state: present 
-        key: "{{ lookup('file', '/Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/svc_secauto/ssh_keys/svc_secauto.pub') }}"
+        key: "{{ lookup('file', '../files/svc_secauto/ssh_keys/svc_secauto.pub') }}"
 
     - name: Set authorized keys
       authorized_key: 
         user: vagrant
         state: present 
-        key: "{{ lookup('file', '/Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/juan_munoz.pub') }}"
+        key: "{{ lookup('file', '../files/juan_munoz.pub') }}"
     
     - name: Configure SSH 
       copy:
-        src: /Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/etc/sshd_config
+        src: ..//files/etc/sshd_config
         dest: /etc/ssh/
         owner: root
         mode: 0600
@@ -82,7 +82,7 @@
 
     - name: Setting up bashrc
       copy:
-        src: /Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/svc_secauto/.bashrc
+        src: ../files/svc_secauto/.bashrc
         dest: /home/svc_secauto/
         owner: svc_secauto
         group: svc_secauto
@@ -105,7 +105,7 @@
           
     - name: setting up ansible hosts file
       copy:
-        src: /Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/etc/ansible/hosts
+        src: ../files/etc/ansible/hosts
         dest: /etc/ansible/
         owner: root
         group: root
@@ -113,7 +113,7 @@
  
     - name: setting up ansible config file 
       copy:
-        src: /Users/juan.munoz/src/vagrant/centos_lab/provisioning/files/etc/ansible/ansible.cfg
+        src: ../files/etc/ansible/ansible.cfg
         dest: /etc/ansible/
         owner: root
         group: root 
