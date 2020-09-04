@@ -7,7 +7,7 @@
   tasks:
     - name: Creating groups
       group:
-        name: svc_secauto
+        name: admin
         state: present
 
     - name: Creating users
@@ -18,12 +18,12 @@
         update_password: on_create
         groups: "{{item.groups}}"
       with_items:
-        - { name: svc_secauto, groups: "wheel, svc_secauto"}
+        - { name: admin, groups: "wheel, admin"}
 
     - name: Adding account to sudoers
       lineinfile: 
-        path: /etc/sudoers.d/svc_secauto
-        line: 'svc_secauto ALL=(ALL) NOPASSWD: ALL'
+        path: /etc/sudoers.d/admin
+        line: 'admin ALL=(ALL) NOPASSWD: ALL'
         state: present
         mode: 0440
         create: yes 
@@ -41,25 +41,25 @@
 
     - name: Setting up .ssh directory 
       file: 
-        path: /home/svc_secauto/.ssh
+        path: /home/admin/.ssh
         state: directory
-        owner: svc_secauto
-        group: svc_secauto
+        owner: admin
+        group: admin
         mode: 0700
 
-    - name: Setting up svc_secauto keys 
+    - name: Setting up admin keys 
       copy: 
-        src: ../files/svc_secauto/ssh_keys/
-        dest: /home/svc_secauto/.ssh
-        owner: svc_secauto
-        group: svc_secauto
+        src: ../files/admin/ssh_keys/
+        dest: /home/admin/.ssh
+        owner: admin
+        group: admin
         mode: 0700
 
     - name: Set authorized keys
       authorized_key: 
-        user: svc_secauto
+        user: admin
         state: present 
-        key: "{{ lookup('file', '../files/svc_secauto/ssh_keys/svc_secauto.pub') }}"
+        key: "{{ lookup('file', '../files/admin/ssh_keys/admin.pub') }}"
 
     - name: Set authorized keys
       authorized_key: 
@@ -82,10 +82,10 @@
 
     - name: Setting up bashrc
       copy:
-        src: ../files/svc_secauto/.bashrc
-        dest: /home/svc_secauto/
-        owner: svc_secauto
-        group: svc_secauto
+        src: ../files/admin/.bashrc
+        dest: /home/admin/
+        owner: admin
+        group: admin
         mode: 0700
 
     - name: ensure a list of packages installed
