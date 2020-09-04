@@ -16,7 +16,7 @@ provider "esxi" {
   esxi_hostport      = "22"
   esxi_hostssl       = "443"
   esxi_username      = "root"
-  esxi_password      = "Iamhereben0)"
+  esxi_password      = "foo"
 }
 
 resource "esxi_guest" "test" {
