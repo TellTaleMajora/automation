@@ -1,0 +1,9 @@
+version: '3' #version of docker compose
+services:
+    redis-server:
+        image: 'redis' #downloads the redis image from docker hub
+    node-app:
+        restart: on-failure
+        build: . #this uses the docker file in CWD
+        ports:
+            - "4001:8081"
