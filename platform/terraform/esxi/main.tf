@@ -12,19 +12,19 @@ terraform {
 }
 
 provider "esxi" {
-  esxi_hostname      = "<add>"
+  esxi_hostname      = "192.168.2.10"
   esxi_hostport      = "22"
   esxi_hostssl       = "443"
-  esxi_username      = "<add>"
-  esxi_password      = "<add>"
+  esxi_username      = "root"
+  esxi_password      = "Iamhereben0)"
 }
 
-resource "esxi_guest" "centos" {
-  guest_name         = "centos"
+resource "esxi_guest" "test" {
+  guest_name         = "test"
   disk_store         = "Primary"
   ovf_source         = "templates/centos.ovf"
-  numvcpus	     = "4"
-  memsize	     = "2048"
+  numvcpus	     = "2"
+  memsize	     = "1024"
 
   network_interfaces {
     virtual_network = "VM Network"
