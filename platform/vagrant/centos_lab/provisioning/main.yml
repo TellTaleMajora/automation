@@ -88,6 +88,11 @@
         group: admin
         mode: 0700
 
+    - name: epel-release
+      yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
+
     - name: ensure a list of packages installed
       tags: yum
       yum:
@@ -102,6 +107,7 @@
         - traceroute
         - rsync
         - vim
+        - ansible
           
     - name: setting up ansible hosts file
       copy:
