@@ -1,0 +1,119 @@
+---
+- hosts: all
+  remote_user: vagrant
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Creating groups
+      group:
+        name: ansible
+        state: present
+
+    - name: Creating automation user 
+      user:
+        name: "{{item.name}}"
+        shell: /bin/bash
+        groups: "{{item.groups}}"
+      with_items:
+        - { name: ansible, groups: "wheel, ansible"}
+
+    - name: Adding account to sudoers
+      lineinfile: 
+        path: /etc/sudoers.d/ansible
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
+        state: present
+        mode: 0440
+        create: yes 
+        validate: 'visudo -cf %s'
+
+    - name: setting up hosts file
+      lineinfile:
+        path: /etc/hosts
+        line: "{{item.hosts}}"
+        insertafter: EOF
+      with_items:
+        - { hosts: "192.168.1.10 controller"}
+        - { hosts: "192.168.1.11 node01"}
+        - { hosts: "192.168.1.12 node02"}
+
+    - name: Setting up .ssh directory 
+      file: 
+        path: /home/ansible/.ssh
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: 0700
+
+    - name: Setting up ansible keys 
+      copy: 
+        src: ../files/ansible/ssh_keys/
+        dest: /home/ansible/.ssh
+        owner: ansible
+        group: ansible
+        mode: 0700
+
+    - name: Set authorized keys
+      authorized_key: 
+        user: ansible
+        state: present 
+        key: "{{ lookup('file', '../files/ansible/ssh_keys/ansible.pub') }}"
+
+    - name: Configure SSH 
+      copy:
+        src: ..//files/etc/sshd_config
+        dest: /etc/ssh/
+        owner: root
+        mode: 0600
+        force: yes 
+
+    - name: Restart service sshd, in all cases
+      service:
+        name: sshd
+        state: restarted
+
+    - name: Setting up bashrc
+      copy:
+        src: ../files/ansible/.bashrc
+        dest: /home/ansible/
+        owner: ansible
+        group: ansible
+        mode: 0700
+
+    - name: epel-release
+      yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
+
+    - name: ensure a list of packages installed
+      tags: yum
+      yum:
+        name: "{{ yum_packages }}"
+      vars:
+        yum_packages:
+        - git
+        - wget
+        - nc
+        - bind-utils
+        - net-tools
+        - traceroute
+        - rsync
+        - vim
+        - ansible
+          
+    - name: setting up ansible hosts file
+      copy:
+        src: ../files/etc/ansible/hosts
+        dest: /etc/ansible/
+        owner: root
+        group: root
+        mode: 0644
+ 
+    - name: setting up ansible config file 
+      copy:
+        src: ../files/etc/ansible/ansible.cfg
+        dest: /etc/ansible/
+        owner: root
+        group: root 
+        mode: 0644
+        backup: yes
