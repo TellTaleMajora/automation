@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/juan.munoz/src/github/automation/platform/vagrant/centos_lab","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
