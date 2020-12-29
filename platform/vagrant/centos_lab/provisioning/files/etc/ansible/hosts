@@ -8,13 +8,10 @@
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 
-all:
-  hosts:
-    master:
-    minion01:
-    minion02:
-  children:
-    testservers:
-      hosts:
-        minion01:
-        minion02:
+# All Machines 
+[automation]
+controller
+
+[nodes]
+node01
+node02

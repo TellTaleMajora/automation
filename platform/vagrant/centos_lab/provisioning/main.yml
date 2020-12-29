@@ -7,23 +7,21 @@
   tasks:
     - name: Creating groups
       group:
-        name: admin
+        name: ansible
         state: present
 
-    - name: Creating users
+    - name: Creating automation user 
       user:
         name: "{{item.name}}"
         shell: /bin/bash
-        password: $6$rounds=656000$iO7Q9L6/w8dUUQVf$rmtnxrQ15TGAfG5ODxQ/WGyEpTwk.vD1W.UtedmOlo9YNkrIwapYMjmKmteEnUJmRYucgUVxXUQy7gtenpLmw0
-        update_password: on_create
         groups: "{{item.groups}}"
       with_items:
-        - { name: admin, groups: "wheel, admin"}
+        - { name: ansible, groups: "wheel, ansible"}
 
     - name: Adding account to sudoers
       lineinfile: 
-        path: /etc/sudoers.d/admin
-        line: 'admin ALL=(ALL) NOPASSWD: ALL'
+        path: /etc/sudoers.d/ansible
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
         state: present
         mode: 0440
         create: yes 
@@ -35,38 +33,32 @@
         line: "{{item.hosts}}"
         insertafter: EOF
       with_items:
-        - { hosts: "10.0.0.10 master"}
-        - { hosts: "10.0.0.11 minion01"}
-        - { hosts: "10.0.0.12 minion02"}
+        - { hosts: "192.168.1.10 controller"}
+        - { hosts: "192.168.1.11 node01"}
+        - { hosts: "192.168.1.12 node02"}
 
     - name: Setting up .ssh directory 
       file: 
-        path: /home/admin/.ssh
+        path: /home/ansible/.ssh
         state: directory
-        owner: admin
-        group: admin
+        owner: ansible
+        group: ansible
         mode: 0700
 
-    - name: Setting up admin keys 
+    - name: Setting up ansible keys 
       copy: 
-        src: ../files/admin/ssh_keys/
-        dest: /home/admin/.ssh
-        owner: admin
-        group: admin
+        src: ../files/ansible/ssh_keys/
+        dest: /home/ansible/.ssh
+        owner: ansible
+        group: ansible
         mode: 0700
 
     - name: Set authorized keys
       authorized_key: 
-        user: admin
+        user: ansible
         state: present 
-        key: "{{ lookup('file', '../files/admin/ssh_keys/admin.pub') }}"
+        key: "{{ lookup('file', '../files/ansible/ssh_keys/ansible.pub') }}"
 
-    - name: Set authorized keys
-      authorized_key: 
-        user: vagrant
-        state: present 
-        key: "{{ lookup('file', '../files/juan_munoz.pub') }}"
-    
     - name: Configure SSH 
       copy:
         src: ..//files/etc/sshd_config
@@ -82,10 +74,10 @@
 
     - name: Setting up bashrc
       copy:
-        src: ../files/admin/.bashrc
-        dest: /home/admin/
-        owner: admin
-        group: admin
+        src: ../files/ansible/.bashrc
+        dest: /home/ansible/
+        owner: ansible
+        group: ansible
         mode: 0700
 
     - name: epel-release
